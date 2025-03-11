@@ -5,17 +5,17 @@ use solana_nostd_entrypoint::{
 
 use crate::{invoke_signed::invoke_signed, ProgramResult};
 
-pub struct SyncNative<'a> {
+pub struct InitializeImmutableOwner<'a> {
     pub token_program: &'a NoStdAccountInfo,
-    pub token: &'a NoStdAccountInfo,
+    pub account: &'a NoStdAccountInfo,
 }
 
-impl<'a> SyncNative<'a> {
+impl InitializeImmutableOwner<'_> {
     pub fn invoke_signed(
         &self,
         signer_seeds: &[&[&[u8]]],
     ) -> ProgramResult {
-        let account_metas = [self.token.to_meta_c()];
+        let account_metas = [self.account.to_meta_c()];
 
         let instruction_data = &[17];
 
@@ -27,6 +27,6 @@ impl<'a> SyncNative<'a> {
             data_len: instruction_data.len() as u64,
         };
 
-        invoke_signed(&instruction, &[self.token, self.token_program], signer_seeds)
+        invoke_signed(&instruction, &[self.account], signer_seeds)
     }
 }

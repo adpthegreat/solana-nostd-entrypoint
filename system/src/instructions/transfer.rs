@@ -15,8 +15,6 @@ impl<'a> Transfer<'a> {
     ) -> ProgramResult {
         let account_metas =
             [self.from.to_meta_c_signer(), self.to.to_meta_c()];
-        let account_infos =
-            [self.from.to_info_c(), self.to.to_info_c()];
 
         let mut instruction_data = [0; 12];
         instruction_data[0] = 2;
@@ -31,6 +29,6 @@ impl<'a> Transfer<'a> {
             data_len: instruction_data.len() as u64,
         };
 
-        invoke_signed(&instruction, &account_infos, signer_seeds)
+        invoke_signed(&instruction, &[self.from, self.to], signer_seeds)
     }
 }

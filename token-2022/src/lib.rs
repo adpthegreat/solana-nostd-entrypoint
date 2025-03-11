@@ -5,7 +5,9 @@ pub mod instructions;
 pub mod invoke_signed;
 
 pub const ID: Pubkey = solana_program::pubkey!(
-    "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+    "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"
 );
+
+pub struct ElgamalPubkey(pub [u8; 32]);
 
 pub type ProgramResult = Result<(), ProgramError>;

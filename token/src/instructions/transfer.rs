@@ -1,9 +1,9 @@
 use solana_nostd_entrypoint::{
-    solana_program::entrypoint::ProgramResult, InstructionC,
+    InstructionC,
     NoStdAccountInfo,
 };
 
-use crate::invoke_signed::invoke_signed;
+use crate::{invoke_signed::invoke_signed, ProgramResult};
 
 pub struct Transfer<'a> {
     pub token_program: &'a NoStdAccountInfo,
@@ -23,12 +23,6 @@ impl<'a> Transfer<'a> {
             self.to.to_meta_c(),
             self.authority.to_meta_c_signer(),
         ];
-        let account_infos = [
-            self.from.to_info_c(),
-            self.to.to_info_c(),
-            self.authority.to_info_c(),
-            self.token_program.to_info_c(),
-        ];
 
         let mut instruction_data = [0u8; 9];
         instruction_data[0] = 3; // Transfer instruction discriminator
@@ -43,6 +37,7 @@ impl<'a> Transfer<'a> {
             data_len: instruction_data.len() as u64,
         };
 
-        invoke_signed(&instruction, &account_infos, signer_seeds)
+        invoke_signed(&instruction, &[self.from, self.to, self.authority],
+             signer_seeds)
     }
 }

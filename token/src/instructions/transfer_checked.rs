@@ -1,6 +1,6 @@
-use crate::invoke_signed::invoke_signed;
+use crate::{invoke_signed::invoke_signed, ProgramResult};
 use solana_nostd_entrypoint::{
-    solana_program::entrypoint::ProgramResult, InstructionC,
+    InstructionC,
     NoStdAccountInfo,
 };
 pub struct TransferChecked<'a> {
@@ -25,13 +25,6 @@ impl<'a> TransferChecked<'a> {
             self.authority.to_meta_c_signer(),
         ];
 
-        let account_infos = [
-            self.from.to_info_c(),
-            self.mint.to_info_c(),
-            self.to.to_info_c(),
-            self.authority.to_info_c(),
-        ];
-
         let mut instruction_data = [0u8; 10];
         instruction_data[0] = 12; // TransferChecked instruction discriminator
         instruction_data[1..9]
@@ -46,6 +39,6 @@ impl<'a> TransferChecked<'a> {
             data_len: instruction_data.len() as u64,
         };
 
-        invoke_signed(&instruction, &account_infos, signer_seeds)
+        invoke_signed(&instruction, &[self.from, self.mint, self.to, self.authority], signer_seeds)
     }
 }

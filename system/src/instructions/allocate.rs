@@ -13,7 +13,6 @@ impl<'a> Allocate<'a> {
         signer_seeds: &[&[&[u8]]],
     ) -> ProgramResult {
         let account_metas = [self.account.to_meta_c_signer()];
-        let account_infos = [self.account.to_info_c()];
 
         let mut instruction_data = [0; 12];
         instruction_data[0] = 8;
@@ -28,6 +27,6 @@ impl<'a> Allocate<'a> {
             data_len: instruction_data.len() as u64,
         };
 
-        invoke_signed(&instruction, &account_infos, signer_seeds)
+        invoke_signed(&instruction, &[self.account], signer_seeds)
     }
 }

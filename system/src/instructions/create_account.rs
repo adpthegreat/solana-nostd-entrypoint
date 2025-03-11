@@ -1,5 +1,8 @@
-use solana_nostd_entrypoint::{
-    solana_program::pubkey::Pubkey, InstructionC, NoStdAccountInfo,
+use {
+    solana_nostd_entrypoint::{
+        InstructionC, NoStdAccountInfo,
+    },
+    solana_program::pubkey::Pubkey,
 };
 
 use crate::{invoke_signed::invoke_signed, ProgramResult};
@@ -19,8 +22,6 @@ impl<'a> CreateAccount<'a> {
     ) -> ProgramResult {
         let account_metas =
             [self.from.to_meta_c_signer(), self.to.to_meta_c_signer()];
-        let account_infos =
-            [self.from.to_info_c(), self.to.to_info_c()];
 
         let mut instruction_data = [0; 52];
         // create account instruction has a '0' discriminator
@@ -38,6 +39,6 @@ impl<'a> CreateAccount<'a> {
             data_len: instruction_data.len() as u64,
         };
 
-        invoke_signed(&instruction, &account_infos, signer_seeds)
+        invoke_signed(&instruction, &[self.from, self.to], signer_seeds)
     }
 }

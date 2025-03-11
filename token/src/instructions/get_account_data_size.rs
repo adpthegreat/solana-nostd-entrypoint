@@ -5,19 +5,19 @@ use solana_nostd_entrypoint::{
 
 use crate::{invoke_signed::invoke_signed, ProgramResult};
 
-pub struct SyncNative<'a> {
+pub struct GetAccountDataSize<'a> {
     pub token_program: &'a NoStdAccountInfo,
-    pub token: &'a NoStdAccountInfo,
+    pub mint_account: &'a NoStdAccountInfo,
 }
 
-impl<'a> SyncNative<'a> {
+impl<'a> GetAccountDataSize<'a> {
     pub fn invoke_signed(
         &self,
         signer_seeds: &[&[&[u8]]],
     ) -> ProgramResult {
-        let account_metas = [self.token.to_meta_c()];
+        let account_metas = [self.mint_account.to_meta_c()];
 
-        let instruction_data = &[17];
+        let instruction_data = &[21];
 
         let instruction = InstructionC {
             program_id: self.token_program.key(),
@@ -27,6 +27,6 @@ impl<'a> SyncNative<'a> {
             data_len: instruction_data.len() as u64,
         };
 
-        invoke_signed(&instruction, &[self.token, self.token_program], signer_seeds)
+        invoke_signed(&instruction, &[self.token_program, self.mint_account], signer_seeds)
     }
 }

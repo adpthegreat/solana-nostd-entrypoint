@@ -1,9 +1,9 @@
 use solana_nostd_entrypoint::{
-    solana_program::entrypoint::ProgramResult, InstructionC,
+    InstructionC,
     NoStdAccountInfo,
 };
 
-use crate::invoke_signed::invoke_signed;
+use crate::{invoke_signed::invoke_signed, ProgramResult};
 
 pub struct CloseAccount<'a> {
     pub token_program: &'a NoStdAccountInfo,
@@ -25,12 +25,6 @@ impl<'a> CloseAccount<'a> {
             self.authority.to_meta_c_signer(),
         ];
 
-        let account_infos = [
-            self.account.to_info_c(),
-            self.destination.to_info_c(),
-            self.authority.to_info_c(),
-        ];
-
         let instruction = InstructionC {
             program_id: self.token_program.key(),
             accounts: account_metas.as_ptr(),
@@ -39,6 +33,6 @@ impl<'a> CloseAccount<'a> {
             data_len: instruction_data.len() as u64,
         };
 
-        invoke_signed(&instruction, &account_infos, signer_seeds)
+        invoke_signed(&instruction, &[self.account, self.destination, self.authority], signer_seeds)
     }
 }

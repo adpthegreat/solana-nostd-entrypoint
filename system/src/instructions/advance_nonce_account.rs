@@ -25,13 +25,6 @@ impl<'a> AdvanceNonceAccount<'a> {
             self.authority.to_meta_c_signer(),
         ];
 
-        let account_infos = [
-            self.account.to_info_c(),
-            self.recent_blockhashes_sysvar
-                .to_info_c(),
-            self.authority.to_info_c(),
-        ];
-
         let mut instruction_data = [0; 4];
         instruction_data[0] = 4;
 
@@ -43,6 +36,6 @@ impl<'a> AdvanceNonceAccount<'a> {
             data_len: instruction_data.len() as u64,
         };
 
-        invoke_signed(&instruction, &account_infos, signer_seeds)
+        invoke_signed(&instruction, &[self.account, self.recent_blockhashes_sysvar, self.authority], signer_seeds)
     }
 }
